@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Form, Input, Button, Table, Select, Row } from "antd";
+import { Col, Form, Input, Button, Table, Select, Row, Checkbox, InputNumber } from "antd";
 import pdf from "../assets/reporte.pdf";
 
 import jsPDF from "jspdf";
@@ -12,6 +12,7 @@ const Orders = () => {
       name: "VH12345",
       lastname: "VHHAS12",
       type: "Cliente1",
+      residuals: true,
       res: [{ res: "Aerosoles", qt: 10 }],
     },
   ]);
@@ -33,9 +34,15 @@ const Orders = () => {
         <Table
           size="small"
           dataSource={data}
+      bordered
           columns={[
             { title: "Camion", dataIndex: "lastname" },
             { title: "Cliente", dataIndex: "type" },
+            {
+                title: "Reposicion",
+                dataIndex: "residuals",
+                render: (x) => (<><InputNumber placeholder="Cantidad" style={{width:'100px'}} /></>)
+            },
             {
               title: "Residuos",
               dataIndex: "res",
@@ -62,6 +69,7 @@ const Orders = () => {
                     style={{ marginRight: "5px" }}
                     size="small"
                     onClick={() => {
+                      window.open(pdf);
                       const doc = new jsPDF();
                       doc.text(`Cliente: ${x.type}`, 20, 20);
                       doc.text(`Patente: ${x.lastname}`, 20, 30);
@@ -97,6 +105,7 @@ const Orders = () => {
           form={form}
           layout="vertical"
           onFinish={(values) => {
+
             if (selected) {
             } else {
               setData([...data, { ...values, res: list }]);
@@ -211,7 +220,10 @@ const Orders = () => {
               ))}
             </Row>
           </Form.Item>
-
+          <Form.Item label="Reposicion">
+            <Checkbox>Si</Checkbox> 
+            <Checkbox>No</Checkbox> 
+          </Form.Item>
           <Form.Item>
             <Button
               htmlType="submit"
